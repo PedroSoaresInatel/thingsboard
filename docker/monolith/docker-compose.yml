@@ -1,0 +1,46 @@
+# ThingsBoard em um único servidor: um nó monolito (fila in-memory) + PostgreSQL.
+# Passo a passo em README.md, nesta mesma pasta.
+
+name: thingsboard-monolith
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: thingsboard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no arquivo .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d thingsboard"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  thingsboard:
+    image: thingsboard/tb-node:${TB_VERSION:-4.4.0.2}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${TB_BIND_ADDRESS:-127.0.0.1}:${TB_HTTP_PORT:-8080}:8080"
+      - "${TB_BIND_ADDRESS:-127.0.0.1}:${TB_MQTT_PORT:-1883}:1883"
+    environment:
+      TB_QUEUE_TYPE: in-memory
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/thingsboard
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      # Chave de licença (opcional aqui: também pode ser colada no assistente de configuração da interface).
+      TB_LICENSE_SECRET: ${TB_LICENSE_SECRET:-}
+      # true = roda sem chave, só para testes: marca d'água e desligamento após 30 dias de uptime acumulado.
+      NON_PRODUCTION_USE: ${NON_PRODUCTION_USE:-false}
+      TB_LICENSE_INSTANCE_DATA_FILE: /data/instance-license.data
+      JAVA_OPTS: ${TB_JAVA_OPTS:--Xms512m -Xmx1536m}
+    volumes:
+      - tbdata:/data
+
+volumes:
+  pgdata:
+  tbdata:
