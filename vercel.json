@@ -13,11 +13,11 @@
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://seu-backend.invalid/api/$1" },
-    { "source": "/static/rulenode/(.*)", "destination": "https://seu-backend.invalid/static/rulenode/$1" },
-    { "source": "/static/widgets/(.*)", "destination": "https://seu-backend.invalid/static/widgets/$1" },
-    { "source": "/oauth2/(.*)", "destination": "https://seu-backend.invalid/oauth2/$1" },
-    { "source": "/login/oauth2/(.*)", "destination": "https://seu-backend.invalid/login/oauth2/$1" },
+    { "source": "/api/(.*)", "destination": "https://conf-calgary-princeton-alexandria.trycloudflare.com/api/$1" },
+    { "source": "/static/rulenode/(.*)", "destination": "https://conf-calgary-princeton-alexandria.trycloudflare.com/static/rulenode/$1" },
+    { "source": "/static/widgets/(.*)", "destination": "https://conf-calgary-princeton-alexandria.trycloudflare.com/static/widgets/$1" },
+    { "source": "/oauth2/(.*)", "destination": "https://conf-calgary-princeton-alexandria.trycloudflare.com/oauth2/$1" },
+    { "source": "/login/oauth2/(.*)", "destination": "https://conf-calgary-princeton-alexandria.trycloudflare.com/login/oauth2/$1" },
     { "source": "/(.*)", "destination": { "service": "ui-ngx" } }
   ]
 }
